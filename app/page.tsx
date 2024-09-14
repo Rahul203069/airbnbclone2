@@ -1,113 +1,218 @@
+"use client"
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/app/ui/card"
+import { Slider } from "@/app/ui/slider"
+import { Switch } from "./ui/switch"
+
+import Maps from '@/app/components/Maps'
 import Image from "next/image";
+import { useState } from "react";
+import { Dialog, DialogContent } from "@radix-ui/react-dialog";
+import { FaAirbnb, FaMap } from "react-icons/fa6";
+import { IoSearchCircle } from "react-icons/io5";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { RiAccountCircleFill } from "react-icons/ri";
+import { SessionProvider, useSession } from "next-auth/react";
+import Logpop from "./components/Logpop";
+import Register from "./components/Register";
+import ClientOnly from "./components/ClientOnly";
+import Login from "./components/Login";
+import Categories from "./components/Categories";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Rentmodal from "./components/Rentmodal";
+import Rent from "./components/Rentmodal";
+import dynamic from "next/dynamic";
+import Listings from "./components/Listings";
+import { TbPhotoPlus } from "react-icons/tb";
+import axios from "axios";
 
+import { CldUploadWidget } from "next-cloudinary";
+import Avatar from "./components/Avatar";
+import Map from "./components/Map";
+import Filter from "./components/Filter";
+import { BiMap } from "react-icons/bi";
+import { DialogTrigger } from "@radix-ui/react-dialog";
+import { FaSearchLocation } from "react-icons/fa"
+import { MdAdd } from "react-icons/md"
 export default function Home() {
+  const [openlog, setopenlog] = useState(false);
+  const [login, setlogin] = useState(false);
+  const [registerpop, setregisterpop] = useState(false)
+  const [rent, setrent] = useState(false);
+  const [userinfo, setuserinfo] = useState(null);
+  const [listings, setlistings] = useState([])
+  const Maps = dynamic(() => import('@/app/components/Maps'), { ssr: false });
+const{data:session}=useSession();
+
+  const pathname=usePathname();
+  
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams);
+
+  const router=useRouter();
+  function applyfilters(){
+// @ts-ignore
+    params.set('geo',geo?.toString());
+   
+    router.push(`${pathname}?${params.toString()}`);
+    
+    
+  };
+
+
+  
+  
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    
+    
+    <SessionProvider>
+  
+ 
+<div className="fixed bottom-0 bg-red-600 right-0 text-white flex items-center rounded-full p-2 z-50 m-2"  onClick={()=>{ if(!session){router.push('/login')}if(session){setrent(true)}; console.log("hello")}}>Create listing<MdAdd size={20}></MdAdd></div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+<div className=" ">
+  <div className="w-full h-full relative flex justify-center items-center">
+<div className={`transition-all opacity-0  w-full h-full absolute z-40 ${registerpop&&'opacity-100'}`}>
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+  </div>
+  </div>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+       <div className="w-full h-full relative flex justify-center items-center">
+<div className={`transition-all opacity-0  w-full h-full absolute z-40 ${rent&&'opacity-100'}`}>
+  {(rent&&session)&&<Rent login={login} listings={listings} register={rent} setlistings={setlistings} setregister={setrent}></Rent>}
+ 
+  </div></div>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+  <div className="w-full h-full relative flex justify-center items-center">
+<div className={`transition-all opacity-0  w-full h-full absolute z-40 ${login&&'opacity-100'}`}>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+</div></div>
+<div className=" border-b p-3 px-4  flex justify-between fixed z-30 bg-white w-screen">
+  
+  <div className="flex items-center text-red-500 text-sm mr-1 md:text-xl font-medium  " onClick={()=>{router.push('/')}}><FaAirbnb size={35}></FaAirbnb> airbnb</div>
+  
+
+
+
+  <Filter></Filter>
+  <div className='flex justify-center items-center text-xs md:text-lg text-slate-600 gap-3 md:hidden '><div className="text-gray-500"> <FaSearchLocation size={20}></FaSearchLocation></div> <Switch    onCheckedChange={(value)=>{if(value){     
+    
+
+    
+    router.push('/')
+ 
+     if (navigator.geolocation) {
+       navigator.geolocation.getCurrentPosition(
+         (position) => {
+           const latitude = position.coords.latitude;
+           const longitude = position.coords.longitude;
+    
+     
+           params.set('geo',`${latitude},${longitude}`);
+           params.set('distance', "1" ); 
+      
+           router.push(`${pathname}?${params.toString()}`);
+           
+         },
+         (error) => {
+           console.error('Error getting location:', error);
+         }
+       );
+     } 
+     
+     
+     
+     
+ 
+     
+     
+     }else{   
+     
+ 
+     
+     params.delete('distance');}  router.push(`${pathname}?${params.toString()}`
+   
+ 
+   
+   )  
+ 
+   router.push('/');
+ 
+ } }
+     
+     
+     ></Switch></div>
+ 
+  
+  <div className="flex items-center gap-4 relative ">
+    <div className="h-full hidden items-center text-sm font-medium md:flex  hover:bg-neutral-200 rounded-full px-2 cursor-pointer transition-all " onClick={()=>{ if(!session){router.push('/login')}if(session){setrent(true)}; console.log("hello")}}> Airbnb your home</div>
+
+
+
+ 
+
+ <Logpop setopenlog={setopenlog} setlogin={setlogin} userinfo={userinfo} setregister={setregisterpop}></Logpop>
+  </div>
+  </div>
+
+  </div>
+  <div className="mt-16 pt-1  fixed z-20 w-screen bg-white">
+ <Categories></Categories>
+
+
+  </div>
+  <div className="mt-32 pt-4 flex-none md:flex">
+
+
+<div className="  flex-none md:flex md:justify-between        w-full ">
+
+<div className="md:hidden block"><Maps listings={listings}></Maps></div>
+  
+
+ <Listings   listings={listings} setlistings={setlistings} ></Listings>
+
+ <div className="  w-full md:w-2/5 " >
+
+ 
+ {!(listings.length===0)&& <div className="hidden md:block"><Maps listings={listings}></Maps></div>} 
+  </div>
+</div>
+
+ {/* <Card className="w-[600px] m-8  ">
+  <Map geo={[60,34]}></Map>
+  <div className="px-6 pt-7">How many km from your current located?</div>
+  <div className="px-6">
+  <Slider defaultValue={[33]} max={100} step={1} />
+  
+  </div>
+  
+  <CardHeader>
+  <CardTitle>Card Title</CardTitle>
+  <CardDescription>Card Description</CardDescription>
+  </CardHeader>
+  <CardContent>
+  <p>Card Content</p>
+  </CardContent>
+  <CardFooter>
+  <p>Card Footer</p>
+  </CardFooter>
+  </Card> */}
+
+
+
+
+  </div>
+ 
+
+
+</SessionProvider>
   );
-}
+} 
